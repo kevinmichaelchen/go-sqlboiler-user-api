@@ -15,3 +15,11 @@ make migrate
 ```
 make boil
 ```
+
+### Publishing to Docker Hub
+```
+docker build \
+  -t kevinmichaelchen/go-sqlboiler-user-api:0.0.1 \
+  .
+docker push kevinmichaelchen/go-sqlboiler-user-api:0.0.1
+```
