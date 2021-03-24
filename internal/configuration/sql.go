@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 
+	_ "github.com/lib/pq"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	_ "github.com/lib/pq"
 )
 
 const (

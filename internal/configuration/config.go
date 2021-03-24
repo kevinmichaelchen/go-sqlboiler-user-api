@@ -6,8 +6,6 @@ import (
 	"github.com/kevinmichaelchen/go-sqlboiler-user-api/internal/obs"
 	"github.com/rs/zerolog/log"
 
-	"github.com/rs/xid"
-
 	flag "github.com/spf13/pflag"
 
 	"github.com/spf13/viper"
@@ -19,12 +17,6 @@ const (
 )
 
 type Config struct {
-	// AppName is a low cardinality identifier for this service.
-	AppName string
-
-	// AppID is a unique identifier for the instance (pod) running this app.
-	AppID string
-
 	// GrpcPort controls what port our gRPC server runs on.
 	GrpcPort int
 
@@ -54,8 +46,6 @@ func (c Config) String() string {
 
 func LoadConfig() Config {
 	c := Config{
-		AppName:  "user-api",
-		AppID:    xid.New().String(),
 		GrpcPort: 8084,
 		HTTPPort: 8085,
 	}
