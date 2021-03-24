@@ -3,7 +3,6 @@ module github.com/kevinmichaelchen/go-sqlboiler-user-api
 go 1.15
 
 require (
-	github.com/dgraph-io/dgo/v200 v200.0.0-20210308191403-7844be8b0a6a
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-redis/cache/v8 v8.3.1
 	github.com/go-redis/redis/v8 v8.6.0
