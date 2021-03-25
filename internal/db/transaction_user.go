@@ -16,6 +16,8 @@ import (
 type UserTransaction interface {
 	GetUser(ctx context.Context, id string) (*userV1.User, error)
 	CreateUser(ctx context.Context, item *userV1.User) error
+	UpdateUser(ctx context.Context, request *userV1.UpdateUserRequest) (*userV1.UpdateUserResponse, error)
+	DeleteUser(ctx context.Context, id string) (*userV1.DeleteUserResponse, error)
 }
 
 type userTransactionImpl struct {
@@ -66,6 +68,51 @@ func (tx *userTransactionImpl) CreateUser(ctx context.Context, item *userV1.User
 	}
 
 	return user.Insert(ctx, tx.tx, boil.Infer())
+}
+
+func (tx *userTransactionImpl) UpdateUser(ctx context.Context, request *userV1.UpdateUserRequest) (*userV1.UpdateUserResponse, error) {
+	ctx, span := obs.NewSpan(ctx, "UpdateUser")
+	defer span.End()
+
+	exec := tx.tx
+
+	// TODO respect FieldMask. Do not update user's name if none is provided
+
+	user, _ := models.FindUser(ctx, exec, request.Id)
+	user.Name = request.Name
+	if _, err := user.Update(ctx, exec, boil.Infer()); err != nil {
+		return nil, fmt.Errorf("failed to update user: %w", err)
+	}
+
+	createdAt, err := ptypes.TimestampProto(user.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	userPB := &userV1.User{
+		Id:        user.ID,
+		Name:      user.Name,
+		CreatedAt: createdAt,
+	}
+
+	return &userV1.UpdateUserResponse{
+		User: userPB,
+	}, nil
+
+}
+
+func (tx *userTransactionImpl) DeleteUser(ctx context.Context, id string) (*userV1.DeleteUserResponse, error) {
+	ctx, span := obs.NewSpan(ctx, "DeleteUser")
+	defer span.End()
+
+	exec := tx.tx
+
+	user, _ := models.FindUser(ctx, exec, id)
+	if _, err := user.Delete(ctx, exec); err != nil {
+		return nil, fmt.Errorf("failed to delete user: %w", err)
+	}
+
+	return &userV1.DeleteUserResponse{}, nil
 }
 
 func (tx *userTransactionImpl) cacheUser(ctx context.Context, item *userV1.User) error {

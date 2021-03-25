@@ -15,6 +15,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/lib/pq v1.10.0
+	github.com/rs/xid v1.2.1
 	github.com/rs/zerolog v1.21.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1

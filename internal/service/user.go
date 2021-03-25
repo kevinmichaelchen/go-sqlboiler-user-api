@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 
+	"github.com/golang/protobuf/ptypes"
 	"github.com/kevinmichaelchen/go-sqlboiler-user-api/internal/db"
 	"github.com/kevinmichaelchen/go-sqlboiler-user-api/internal/obs"
 	userV1 "github.com/kevinmichaelchen/go-sqlboiler-user-api/pkg/pb/myorg/user/v1"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"github.com/rs/xid"
 )
 
 func (s Service) DropAllData(ctx context.Context) error {
@@ -15,7 +15,23 @@ func (s Service) DropAllData(ctx context.Context) error {
 }
 
 func (s Service) CreateUser(ctx context.Context, request *userV1.CreateUserRequest) (*userV1.CreateUserResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "Unimplemented")
+	// TODO add validation
+
+	user := &userV1.User{
+		Id:        xid.New().String(),
+		CreatedAt: ptypes.TimestampNow(),
+		Name:      request.Name,
+	}
+
+	if err := s.dbClient.RunInTransaction(ctx, func(ctx context.Context, tx db.Transaction) error {
+		return tx.CreateUser(ctx, user)
+	}); err != nil {
+		return nil, err
+	}
+
+	return &userV1.CreateUserResponse{
+		User: user,
+	}, nil
 }
 
 func (s Service) GetUser(ctx context.Context, request *userV1.GetUserRequest) (*userV1.GetUserResponse, error) {
@@ -46,9 +62,36 @@ func (s Service) GetUser(ctx context.Context, request *userV1.GetUserRequest) (*
 }
 
 func (s Service) UpdateUser(ctx context.Context, request *userV1.UpdateUserRequest) (*userV1.UpdateUserResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "Unimplemented")
+	var response *userV1.UpdateUserResponse
+
+	// TODO add validation
+
+	if err := s.dbClient.RunInTransaction(ctx, func(ctx context.Context, tx db.Transaction) error {
+		if res, err := tx.UpdateUser(ctx, request); err != nil {
+			return err
+		} else {
+			response = res
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+
+	return response, nil
 }
 
 func (s Service) DeleteUser(ctx context.Context, request *userV1.DeleteUserRequest) (*userV1.DeleteUserResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "Unimplemented")
+	var response *userV1.DeleteUserResponse
+	if err := s.dbClient.RunInTransaction(ctx, func(ctx context.Context, tx db.Transaction) error {
+		if res, err := tx.DeleteUser(ctx, request.Id); err != nil {
+			return err
+		} else {
+			response = res
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+
+	return response, nil
 }
