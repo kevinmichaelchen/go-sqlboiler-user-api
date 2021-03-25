@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/kevinmichaelchen/go-sqlboiler-user-api/internal/db/models"
 	"github.com/kevinmichaelchen/go-sqlboiler-user-api/internal/obs"
 )
 
@@ -14,6 +15,7 @@ type Client interface {
 	Ping(ctx context.Context) error
 	RunInTransaction(ctx context.Context, fn TransactionFunc) error
 	RunInReadOnlyTransaction(ctx context.Context, fn TransactionFunc) error
+	DropAllData(ctx context.Context) error
 }
 
 type clientImpl struct {
@@ -96,4 +98,10 @@ func (c *clientImpl) RunInTransaction(ctx context.Context, fn TransactionFunc) e
 	}
 
 	return nil
+}
+
+func (c *clientImpl) DropAllData(ctx context.Context) error {
+	// Delete all pilots from the database
+	_, err := models.Users().DeleteAll(ctx, c.db)
+	return fmt.Errorf("failed to delete all users: %w", err)
 }

@@ -10,10 +10,12 @@ option java_package = "com.myorg.user.v1";
 option objc_class_prefix = "MTX";
 option php_namespace = "MyOrg\\User\\V1";
 
-import "myorg/user/v1/get_user.proto";
-import "myorg/user/v1/create_user.proto";
+import "myorg/user/v1/user.proto";
 
-service UserService {
-    rpc GetUser(GetUserRequest) returns (GetUserResponse);
-    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+message CreateUserRequest {
+    string name = 1;
+}
+
+message CreateUserResponse {
+    User user = 1;
 }

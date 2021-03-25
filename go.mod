@@ -7,6 +7,10 @@ require (
 	github.com/go-redis/cache/v8 v8.3.1
 	github.com/go-redis/redis/v8 v8.8.0
 	github.com/golang/protobuf v1.5.1
+	github.com/gorilla/handlers v1.5.1
+	github.com/gorilla/mux v1.8.0
+	github.com/graphql-go/graphql v0.7.9
+	github.com/graphql-go/handler v0.2.3
 	github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2 v2.0.0-rc.2
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
@@ -22,6 +26,7 @@ require (
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.19.0
 	go.opentelemetry.io/otel/sdk v0.19.0
 	go.opentelemetry.io/otel/trace v0.19.0
+	google.golang.org/genproto v0.0.0-20210303154014-9728d6b83eeb
 	google.golang.org/grpc v1.36.0
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
